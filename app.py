@@ -1,4 +1,56 @@
- })
+import streamlit as st
+import pandas as pd
+
+# Set up the app
+st.set_page_config(page_title="Investment Growth Calculator", page_icon="💰")
+
+st.title("💰 Investment Growth Calculator")
+st.write("See how your investments could grow over time!")
+
+# Get information from the user
+st.header("Enter Your Investment Details")
+
+initial = st.number_input(
+    "Starting Investment ($)", min_value=0.0, value=1000.0, step=100.0
+)
+
+monthly = st.number_input(
+    "Monthly Contribution ($)", min_value=0.0, value=200.0, step=50.0
+)
+
+rate = st.number_input(
+    "Expected Annual Return (%)", min_value=0.0,
+    max_value=100.0, value=7.0, step=0.5
+)
+
+years = st.number_input(
+    "Number of Years", min_value=1, max_value=50, value=20
+)
+
+# Calculate investment growth
+if st.button("Calculate Investment Growth"):
+
+    balance = initial
+    total_contributed = initial
+    monthly_rate = rate / 100 / 12
+
+    # Store results for the chart
+    data = [{
+        "Year": 0,
+        "Investment Value": balance,
+        "Total Contributions": total_contributed
+    }]
+
+    for year in range(1, years + 1):
+        for month in range(12):
+            balance = balance * (1 + monthly_rate) + monthly
+            total_contributed += monthly
+
+        data.append({
+            "Year": year,
+            "Investment Value": balance,
+            "Total Contributions": total_contributed
+        })
 
     investment_growth = balance - total_contributed
 
